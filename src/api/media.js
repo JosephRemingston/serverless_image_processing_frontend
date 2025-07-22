@@ -1,4 +1,4 @@
-const BASE_URL = "http://3.0.90.203/api";
+const BASE_URL = "/api";
 
 export async function generateSignedUrl(token) {
   const res = await fetch(`${BASE_URL}/media/generate-signed-url`, {

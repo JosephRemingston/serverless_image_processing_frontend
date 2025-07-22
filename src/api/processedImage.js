@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = "http://3.0.90.203/api";
+const BASE_URL = "/api";
 
 export async function getProcessedImages(token, email) {
     try {
