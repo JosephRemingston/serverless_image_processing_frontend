@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "/api";
+const BASE_URL = "https://1b823532d8ce.ngrok-free.app/api";
 
 // Create axios instance
 const api = axios.create({
@@ -66,7 +66,7 @@ export const signupUser = async ({ username, password, email }) => {
             password,
             email,
         }, {
-            headers: { "Content-Type": "application/json" }
+            headers: { "Content-Type": "application/json" , 'ngrok-skip-browser-warning': 'true'}
         });
 
         return res.data;
@@ -82,7 +82,7 @@ export const confirmUser = async ({ username, code }) => {
             username,
             code,
         }, {
-            headers: { "Content-Type": "application/json" }
+            headers: { "Content-Type": "application/json" , 'ngrok-skip-browser-warning': 'true'}
         });
 
         return res.data;
@@ -102,7 +102,7 @@ export const loginUser = async (username, password) => {
             username: username.toString(),
             password: password.toString(),
         }, {
-            headers: { "Content-Type": "application/json" }
+            headers: { "Content-Type": "application/json" , 'ngrok-skip-browser-warning': 'true'}
         });
 
         return res.data;
@@ -115,7 +115,7 @@ export const loginUser = async (username, password) => {
 export const getProfile = async (token) => {
     try {
         const res = await api.get('/user/profile', {
-            headers: { Authorization: `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${token}` , 'ngrok-skip-browser-warning': 'true'}
         });
 
         return res.data.data;
@@ -128,7 +128,7 @@ export const getProfile = async (token) => {
 export const generateSignedUrl = async (token) => {
     try {
         const res = await api.get('/media/generate-signed-url', {
-            headers: { Authorization: `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${token}` , 'ngrok-skip-browser-warning': 'true'}
         });
 
         return res.data.data;

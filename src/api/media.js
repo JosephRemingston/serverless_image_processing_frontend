@@ -1,8 +1,8 @@
-const BASE_URL = "/api";
+const BASE_URL = "https://1b823532d8ce.ngrok-free.app/api";
 
 export async function generateSignedUrl(token) {
   const res = await fetch(`${BASE_URL}/media/generate-signed-url`, {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: { Authorization: `Bearer ${token}` , 'ngrok-skip-browser-warning': 'true'},
   });
 
   const data = await res.json();
@@ -25,7 +25,7 @@ export async function generateSignedUrl(token) {
 export async function uploadToS3(signedUrl, file) {
   const res = await fetch(signedUrl, {
     method: "PUT",
-    headers: { "Content-Type": "image/png" },
+    headers: { "Content-Type": "image/png"  , 'ngrok-skip-browser-warning': 'true'},
     body: file,
   });
 

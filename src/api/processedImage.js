@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = "/api";
+const BASE_URL = "https://1b823532d8ce.ngrok-free.app/api";
 
 export async function getProcessedImages(token, email) {
     try {
@@ -12,7 +12,8 @@ export async function getProcessedImages(token, email) {
             params: { email: email },
             headers: {
                 'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'ngrok-skip-browser-warning': 'true'
             },
         });
 
