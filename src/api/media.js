@@ -1,4 +1,4 @@
-const BASE_URL = "https://1b823532d8ce.ngrok-free.app/api";
+const BASE_URL = "https://serverless-image-processing.vercel.app/api";
 
 export async function generateSignedUrl(token) {
   const res = await fetch(`${BASE_URL}/media/generate-signed-url`, {
