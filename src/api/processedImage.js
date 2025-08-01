@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = "https://1b823532d8ce.ngrok-free.app/api";
+const BASE_URL = "https://serverless-image-processing.vercel.app/api";
 
 export async function getProcessedImages(token, email) {
     try {
