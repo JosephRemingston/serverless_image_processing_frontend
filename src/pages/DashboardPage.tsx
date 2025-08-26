@@ -70,9 +70,25 @@ export default function DashboardPage() {
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      // Check file size (5MB limit)
+      const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+      if (file.size > maxSize) {
+        setError('File size too large. Please select an image smaller than 5MB.');
+        showError('File Too Large', 'Please select an image smaller than 5MB');
+        return;
+      }
+
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        setError('Please select a valid image file');
+        showError('Invalid File Type', 'Please select a valid image file');
+        return;
+      }
+
       setSelectedFile(file);
       setAnalysisResults(null);
       setProcessingResults(null);
+      setConversionResults(null);
       setError('');
       
       // Create preview URL
@@ -86,17 +102,30 @@ export default function DashboardPage() {
     const files = event.dataTransfer.files;
     if (files.length > 0) {
       const file = files[0];
-      if (file.type.startsWith('image/')) {
-        setSelectedFile(file);
-        setAnalysisResults(null);
-        setProcessingResults(null);
-        setError('');
-        
-        const url = URL.createObjectURL(file);
-        setPreviewUrl(url);
-      } else {
-        setError('Please select an image file');
+      
+      // Check file size (5MB limit)
+      const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+      if (file.size > maxSize) {
+        setError('File size too large. Please select an image smaller than 5MB.');
+        showError('File Too Large', 'Please select an image smaller than 5MB');
+        return;
       }
+
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        setError('Please select a valid image file');
+        showError('Invalid File Type', 'Please select a valid image file');
+        return;
+      }
+
+      setSelectedFile(file);
+      setAnalysisResults(null);
+      setProcessingResults(null);
+      setConversionResults(null);
+      setError('');
+      
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
     }
   };
 
@@ -253,7 +282,7 @@ export default function DashboardPage() {
                     </p>
                     <div className="flex items-center justify-center space-x-2 text-sm text-gray-400">
                       <FileImage className="h-4 w-4" />
-                      <span>Supports JPG, PNG, GIF up to 10MB</span>
+                      <span>Supports JPG, PNG, GIF up to 5MB</span>
                     </div>
                   </div>
                 ) : (
@@ -440,6 +469,7 @@ export default function DashboardPage() {
                   accept="image/*"
                   onChange={handleFileSelect}
                   className="hidden"
+                  max="5242880"
                 />
               </div>
             </div>
