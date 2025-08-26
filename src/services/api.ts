@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://serverless-image-processing.vercel.app/api";
+const API_BASE_URL = "https://vm5i52o5g1.execute-api.ap-south-1.amazonaws.com/api";
 
 interface ApiResponse<T = any> {
   statusCode: number;
