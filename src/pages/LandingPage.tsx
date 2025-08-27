@@ -211,7 +211,11 @@ export default function LandingPage() {
             >
               <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
                 <div className="aspect-video bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl flex items-center justify-center mb-6">
-                  <Camera className="h-16 w-16 text-blue-600" />
+                  <img
+                    src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80"
+                    alt="Sample"
+                    className="w-full h-full object-cover rounded-xl"
+                  />
                 </div>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
