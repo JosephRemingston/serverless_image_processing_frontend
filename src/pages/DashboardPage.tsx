@@ -332,33 +332,6 @@ export default function DashboardPage() {
                         )}
                       </button>
 
-                      <button
-                        onClick={convertImage}
-                        disabled={isConverting}
-                        className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center space-x-2"
-                      >
-                        {isConverting ? (
-                          <>
-                            <Loader2 className="h-5 w-5 animate-spin" />
-                            <span>Converting...</span>
-                          </>
-                        ) : (
-                          <>
-                            <ImageIcon className="h-5 w-5" />
-                            <span>Convert to Bytes</span>
-                          </>
-                        )}
-                      </button>
-
-                      <button
-                        onClick={() => setShowProcessingOptions(!showProcessingOptions)}
-                        className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 flex items-center justify-center space-x-2"
-                      >
-                        <ImageIcon className="h-5 w-5" />
-                        <span>Process Image</span>
-                      </button>
-                    </div>
-
                     {showProcessingOptions && (
                       <motion.div
                         initial={{ opacity: 0, height: 0 }}
