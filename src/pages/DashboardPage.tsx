@@ -2,15 +2,10 @@ import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
   Upload,
-  Camera,
-  Image as ImageIcon,
-  Zap,
   Eye,
-  Download,
   Trash2,
   FileImage,
   Loader2,
-  Settings,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
@@ -39,29 +34,11 @@ interface AnalysisResult {
   imageName?: string;
 }
 
-interface ProcessingOptions {
-  resize: boolean;
-  width: number;
-  quality: number;
-  format: string;
-}
-
 export default function DashboardPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [isConverting, setIsConverting] = useState(false);
   const [analysisResults, setAnalysisResults] = useState<AnalysisResult | null>(null);
-  const [processingResults, setProcessingResults] = useState<any>(null);
-  const [conversionResults, setConversionResults] = useState<any>(null);
-  const [showProcessingOptions, setShowProcessingOptions] = useState(false);
-  const [processingOptions, setProcessingOptions] = useState<ProcessingOptions>({
-    resize: false,
-    width: 1024,
-    quality: 80,
-    format: 'jpeg',
-  });
   const [error, setError] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -99,8 +76,6 @@ export default function DashboardPage() {
 
     setSelectedFile(file);
     setAnalysisResults(null);
-    setProcessingResults(null);
-    setConversionResults(null);
     setError('');
     setPreviewUrl(URL.createObjectURL(file));
   };
@@ -130,56 +105,11 @@ export default function DashboardPage() {
     }
   };
 
-  const processImage = async () => {
-    if (!selectedFile) return;
-    setIsProcessing(true);
-    setError('');
-    try {
-      const response = await apiService.convertImageToBytesWithProcessing(selectedFile, processingOptions);
-      if (response.statusCode === 200) {
-        setProcessingResults(response.data);
-        showSuccess('Processing Complete', 'Image processed successfully');
-      } else {
-        setError(response.message || 'Processing failed');
-        showError('Processing Failed', response.message || 'Failed to process image');
-      }
-    } catch (error: any) {
-      setError(error.message || 'An error occurred during processing');
-      showError('Processing Error', error.message || 'An error occurred during processing');
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const convertImage = async () => {
-    if (!selectedFile) return;
-    setIsConverting(true);
-    setError('');
-    try {
-      const response = await apiService.convertImageToBytes(selectedFile);
-      if (response.statusCode === 200) {
-        setConversionResults(response.data);
-        showSuccess('Conversion Complete', 'Image converted to base64 successfully');
-      } else {
-        setError(response.message || 'Conversion failed');
-        showError('Conversion Failed', response.message || 'Failed to convert image');
-      }
-    } catch (error: any) {
-      setError(error.message || 'An error occurred during conversion');
-      showError('Conversion Error', error.message || 'An error occurred during conversion');
-    } finally {
-      setIsConverting(false);
-    }
-  };
-
   const clearImage = () => {
     setSelectedFile(null);
     setPreviewUrl(null);
     setAnalysisResults(null);
-    setProcessingResults(null);
-    setConversionResults(null);
     setError('');
-    setShowProcessingOptions(false);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -229,23 +159,6 @@ export default function DashboardPage() {
                   </button>
 
                   <button
-                    onClick={() => setShowProcessingOptions((p) => !p)}
-                    className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-xl hover:bg-gray-200"
-                  >
-                    <Settings className="w-4 h-4" />
-                    Processing
-                  </button>
-
-                  <button
-                    onClick={convertImage}
-                    disabled={isConverting}
-                    className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700"
-                  >
-                    {isConverting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
-                    Convert
-                  </button>
-
-                  <button
                     onClick={clearImage}
                     className="flex items-center gap-2 px-4 py-2 bg-red-100 text-red-700 rounded-xl hover:bg-red-200"
                   >
@@ -253,71 +166,6 @@ export default function DashboardPage() {
                     Clear
                   </button>
                 </div>
-
-                {/* Processing Options */}
-                {showProcessingOptions && (
-                  <div className="mt-4 w-full bg-gray-50 rounded-xl p-4 border">
-                    <div className="flex items-center mb-3">
-                      <input
-                        type="checkbox"
-                        checked={processingOptions.resize}
-                        onChange={(e) =>
-                          setProcessingOptions((prev) => ({ ...prev, resize: e.target.checked }))
-                        }
-                        className="mr-2"
-                      />
-                      <label className="font-medium text-gray-700">Resize Image</label>
-                    </div>
-                    {processingOptions.resize && (
-                      <div className="mb-3">
-                        <label className="block text-sm text-gray-600 mb-1">Width (px)</label>
-                        <input
-                          type="number"
-                          value={processingOptions.width}
-                          onChange={(e) =>
-                            setProcessingOptions((prev) => ({ ...prev, width: Number(e.target.value) }))
-                          }
-                          className="w-full border rounded-lg px-3 py-2"
-                        />
-                      </div>
-                    )}
-                    <div className="mb-3">
-                      <label className="block text-sm text-gray-600 mb-1">Quality (%)</label>
-                      <input
-                        type="number"
-                        value={processingOptions.quality}
-                        onChange={(e) =>
-                          setProcessingOptions((prev) => ({ ...prev, quality: Number(e.target.value) }))
-                        }
-                        className="w-full border rounded-lg px-3 py-2"
-                        min={1}
-                        max={100}
-                      />
-                    </div>
-                    <div className="mb-3">
-                      <label className="block text-sm text-gray-600 mb-1">Format</label>
-                      <select
-                        value={processingOptions.format}
-                        onChange={(e) =>
-                          setProcessingOptions((prev) => ({ ...prev, format: e.target.value }))
-                        }
-                        className="w-full border rounded-lg px-3 py-2"
-                      >
-                        <option value="jpeg">JPEG</option>
-                        <option value="png">PNG</option>
-                        <option value="webp">WebP</option>
-                      </select>
-                    </div>
-                    <button
-                      onClick={processImage}
-                      disabled={isProcessing}
-                      className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700"
-                    >
-                      {isProcessing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
-                      Process Image
-                    </button>
-                  </div>
-                )}
               </>
             ) : (
               <>
@@ -368,38 +216,6 @@ export default function DashboardPage() {
                     ))}
                   </ul>
                 </div>
-              </div>
-            )}
-
-            {/* Processed Image Preview */}
-            {processingResults && (
-              <div className="bg-white rounded-2xl shadow-lg p-4 border border-gray-100">
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">Processed Image</h3>
-                <img
-                  src={`data:image/${processingOptions.format};base64,${processingResults.base64}`}
-                  alt="Processed"
-                  className="rounded-lg max-h-64 object-contain mb-3"
-                />
-                <a
-                  href={`data:image/${processingOptions.format};base64,${processingResults.base64}`}
-                  download={`processed.${processingOptions.format}`}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700"
-                >
-                  <Download className="w-4 h-4" />
-                  Download
-                </a>
-              </div>
-            )}
-
-            {/* Conversion Result */}
-            {conversionResults && (
-              <div className="bg-white rounded-2xl shadow-lg p-4 border border-gray-100">
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">Base64 String</h3>
-                <textarea
-                  readOnly
-                  value={conversionResults.base64}
-                  className="w-full h-32 border rounded-lg p-2 text-xs font-mono"
-                />
               </div>
             )}
           </motion.div>
